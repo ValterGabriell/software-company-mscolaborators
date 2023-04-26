@@ -12,7 +12,7 @@ import java.time.LocalDate;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-public class Colaborators {
+public class Colaborator {
     @Id
     private Long id;
     private String name;
