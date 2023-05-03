@@ -1,4 +1,4 @@
-package io.github.valtergabriell.mscolaborators.infra.requests;
+package io.github.valtergabriell.mscolaborators.infra.external.requests;
 
 import io.github.valtergabriell.mscolaborators.application.domain.dto.Lead;
 import org.springframework.cloud.openfeign.FeignClient;

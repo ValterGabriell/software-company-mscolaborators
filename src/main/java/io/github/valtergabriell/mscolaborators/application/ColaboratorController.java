@@ -6,6 +6,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
+
 @RestController
 @RequestMapping("colaborator")
 public class ColaboratorController {
@@ -17,8 +19,8 @@ public class ColaboratorController {
     }
 
     @PostMapping(value = "/create", params = {"cnpj"})
-    public ResponseEntity<Colaborator> createNewColaborator(@RequestBody Colaborator colaborator, @RequestParam Long cnpj) {
-        Colaborator newColaborator = colaboratorService.createNewColaborator(colaborator, cnpj);
+    public ResponseEntity<Colaborator> createNewColaborator(@RequestBody Colaborator colaborator, @RequestParam Long cnpj, @RequestParam BigDecimal income) {
+        Colaborator newColaborator = colaboratorService.createNewColaborator(colaborator, cnpj, income);
         return new ResponseEntity<>(newColaborator, HttpStatus.CREATED);
     }
 

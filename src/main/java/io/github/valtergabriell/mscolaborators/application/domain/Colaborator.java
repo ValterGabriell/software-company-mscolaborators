@@ -1,5 +1,6 @@
 package io.github.valtergabriell.mscolaborators.application.domain;
 
+import io.github.valtergabriell.mscolaborators.application.domain.dto.ClientAccount;
 import io.github.valtergabriell.mscolaborators.application.domain.enumerations.Gender;
 import io.github.valtergabriell.mscolaborators.application.domain.enumerations.TypePerson;
 import jakarta.persistence.Entity;
@@ -7,6 +8,7 @@ import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Entity
@@ -112,5 +114,15 @@ public class Colaborator {
 
     public void setLead(Long lead) {
         this.lead = lead;
+    }
+
+    public ClientAccount toModel(BigDecimal income) {
+        return new ClientAccount(
+                this.id.toString(),
+                this.name,
+                this.email,
+                this.phone,
+                income
+        );
     }
 }
