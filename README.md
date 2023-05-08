@@ -1,4 +1,4 @@
-<h1 align="center">Microserviços de avaliação de criação de líder - Empresa de Software</h1>
+<h1 align="center">Microserviços de avaliação de criação de colaborador - Empresa de Software</h1>
 <p align="center"><i>Repositório responsável por criar os colaboradores das squads.</i></p>
 
 ##  Sobre esse projeto
