@@ -1,5 +1,6 @@
 package io.github.valtergabriell.mscolaborators.application.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.github.valtergabriell.mscolaborators.application.domain.dto.ClientAccount;
 import io.github.valtergabriell.mscolaborators.application.domain.enumerations.Gender;
 import io.github.valtergabriell.mscolaborators.application.domain.enumerations.TypePerson;
@@ -100,6 +101,7 @@ public class Colaborator {
         this.hireDate = hireDate;
     }
 
+    @JsonIgnore
     public String getPassword() {
         return password;
     }

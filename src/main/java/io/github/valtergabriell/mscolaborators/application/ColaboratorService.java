@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -30,7 +31,7 @@ public class ColaboratorService {
     }
 
     public Colaborator createNewColaborator(Colaborator colaborators, Long cnpj, BigDecimal income) {
-        if (income == null){
+        if (income == null) {
             throw new RequestExceptions("Renda precisa ser passada!");
         }
         //getting lead from mslead
@@ -71,4 +72,83 @@ public class ColaboratorService {
         }
         return response;
     }
+
+    public List<Colaborator> findAllInactivesColaborators() {
+        return colaboratorsRepo.returnAllInactivesColaborators();
+    }
+
+    public List<Colaborator> findAllActivesColaborators() {
+        return colaboratorsRepo.returnAllActivesColaborators();
+    }
+
+    public Response<Long> findLeadIdByColaborator(Long cpf) {
+        boolean present = colaboratorsRepo.findById(cpf).isPresent();
+        Long id = colaboratorsRepo.returnLeadId(cpf);
+        Response<Long> response = new Response<>();
+        if (!present) {
+            response.setMessage("Colaborador não encontrado");
+        } else {
+            response.setData(id);
+            response.setMessage("Sucesso!");
+        }
+        return response;
+    }
+
+    public Response<Colaborator> updateColaboratorName(Long cpf, String name) {
+        Colaborator colaborator = colaboratorsRepo.findById(cpf).orElseThrow(() -> new RequestExceptions("Colaborador não encontrado"));
+        colaborator.setName(name);
+        colaboratorsRepo.save(colaborator);
+
+        Response<Colaborator> response = new Response<>();
+        response.setData(colaborator);
+        response.setMessage("Sucesso!");
+        return response;
+    }
+
+    public Response<Colaborator> updateColaboratorEmail(Long cpf, String email) {
+        Colaborator colaborator = colaboratorsRepo.findById(cpf).orElseThrow(() -> new RequestExceptions("Colaborador não encontrado"));
+        colaborator.setEmail(email);
+        colaboratorsRepo.save(colaborator);
+
+        Response<Colaborator> response = new Response<>();
+        response.setData(colaborator);
+        response.setMessage("Sucesso!");
+        return response;
+    }
+
+    public Response<Colaborator> updateColaboratorPhone(Long cpf, String phone) {
+        Colaborator colaborator = colaboratorsRepo.findById(cpf).orElseThrow(() -> new RequestExceptions("Colaborador não encontrado"));
+        colaborator.setPhone(phone);
+        colaboratorsRepo.save(colaborator);
+
+        Response<Colaborator> response = new Response<>();
+        response.setData(colaborator);
+        response.setMessage("Sucesso!");
+        return response;
+    }
+
+
+    public Response<Colaborator> updateColaboratorLead(Long cpf, Long lead) {
+        Colaborator colaborator = colaboratorsRepo.findById(cpf).orElseThrow(() -> new RequestExceptions("Colaborador não encontrado"));
+        colaborator.setLead(lead);
+        colaboratorsRepo.save(colaborator);
+
+        Response<Colaborator> response = new Response<>();
+        response.setData(colaborator);
+        response.setMessage("Sucesso!");
+        return response;
+    }
+
+    public Response<Colaborator> updateColaboratorstatus(Long cpf) {
+        Colaborator colaborator = colaboratorsRepo.findById(cpf).orElseThrow(() -> new RequestExceptions("Colaborador não encontrado"));
+        colaborator.setActive(!colaborator.getActive());
+        colaboratorsRepo.save(colaborator);
+
+        Response<Colaborator> response = new Response<>();
+        response.setData(colaborator);
+        response.setMessage("Sucesso!");
+        return response;
+    }
+
+
 }
