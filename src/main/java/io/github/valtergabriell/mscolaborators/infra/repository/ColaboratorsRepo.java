@@ -10,8 +10,6 @@ import java.util.Optional;
 
 public interface ColaboratorsRepo extends JpaRepository<Colaborator, Long> {
 
-    Optional<Colaborator> findByLead(Long lead);
-
     @Query(value = "SELECT c.lead FROM Colaborator c WHERE c.id = ?1")
     Long returnLeadId(Long id);
 
