@@ -18,4 +18,7 @@ public interface ColaboratorsRepo extends JpaRepository<Colaborator, Long> {
 
     @Query(value = "SELECT c FROM Colaborator c WHERE c.isActive = true")
     List<Colaborator> returnAllActivesColaborators();
+
+    @Query(value = "SELECT c FROM Colaborator c WHERE c.lead = ?1")
+    List<Colaborator> returnAllColaboratorsByLead(Long lead);
 }

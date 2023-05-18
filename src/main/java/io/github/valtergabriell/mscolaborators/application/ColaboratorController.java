@@ -78,4 +78,16 @@ public class ColaboratorController {
         Response<Colaborator> colaborator = colaboratorService.updateColaboratorstatus(cpf);
         return new ResponseEntity<>(colaborator, HttpStatus.OK);
     }
+
+    @DeleteMapping(params = {"colaboratorId"})
+    public ResponseEntity<?> delete(@RequestParam("colaboratorId") Long colaboratorId) {
+        colaboratorService.deleteColaboratorById(colaboratorId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping(value = "/delete-all-employees-by-manager", params = {"leadId"})
+    public ResponseEntity<?> deleteAllEmployeesWhenLeadIsDeleted(@RequestParam("leadId") Long leadId) {
+        colaboratorService.deleteAllEmployeesWhenLeadIsDeleted(leadId);
+        return ResponseEntity.noContent().build();
+    }
 }

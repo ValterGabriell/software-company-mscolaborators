@@ -1,14 +1,15 @@
 package io.github.valtergabriell.mscolaborators.application;
 
 import io.github.valtergabriell.mscolaborators.application.domain.Colaborator;
-import io.github.valtergabriell.mscolaborators.application.domain.dto.Lead;
 import io.github.valtergabriell.mscolaborators.application.domain.dto.Response;
 import io.github.valtergabriell.mscolaborators.common.ModelMapperSingleton;
 import io.github.valtergabriell.mscolaborators.exception.RequestExceptions;
+import io.github.valtergabriell.mscolaborators.infra.external.requests.MsJobsRequests;
 import io.github.valtergabriell.mscolaborators.infra.external.requests.MsLeadRequests;
 import io.github.valtergabriell.mscolaborators.infra.external.requests.queue.send.SendRequestToCreateNewClient;
 import io.github.valtergabriell.mscolaborators.infra.repository.ColaboratorsRepo;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -22,11 +23,13 @@ public class ColaboratorService {
 
     private final ColaboratorsRepo colaboratorsRepo;
     private final MsLeadRequests msLeadRequests;
+    private final MsJobsRequests msJobsRequests;
     private final SendRequestToCreateNewClient sendRequestToCreateNewClient;
 
-    public ColaboratorService(ColaboratorsRepo colaboratorsRepo, MsLeadRequests msLeadRequests, SendRequestToCreateNewClient sendRequestToCreateNewClient) {
+    public ColaboratorService(ColaboratorsRepo colaboratorsRepo, MsLeadRequests msLeadRequests, MsJobsRequests msJobsRequests, SendRequestToCreateNewClient sendRequestToCreateNewClient) {
         this.colaboratorsRepo = colaboratorsRepo;
         this.msLeadRequests = msLeadRequests;
+        this.msJobsRequests = msJobsRequests;
         this.sendRequestToCreateNewClient = sendRequestToCreateNewClient;
     }
 
@@ -35,7 +38,6 @@ public class ColaboratorService {
             throw new RequestExceptions("Renda precisa ser passada!");
         }
         //getting lead from mslead
-        Lead lead = msLeadRequests.findLeadByCnpj(cnpj);
         boolean present = colaboratorsRepo.findById(colaborators.getId()).isPresent();
         if (present) {
             throw new RequestExceptions("Usuario ja exsitente!");
@@ -45,7 +47,7 @@ public class ColaboratorService {
             throw new RequestExceptions("O tamanho do CPF está incorreto, precisa ter 11 digitos!");
         }
 
-        sendRequestToCreateNewClient.createNewClient(colaborators.toModel(income));
+        //sendRequestToCreateNewClient.createNewClient(colaborators.toModel(income));
         return savingUserOnDB(colaborators, cnpj);
     }
 
@@ -150,5 +152,20 @@ public class ColaboratorService {
         return response;
     }
 
+    public void deleteColaboratorById(Long colaboratorId){
+        Colaborator colaborator = colaboratorsRepo.findById(colaboratorId).orElseThrow(() -> new RequestExceptions("Colaborador não encontrado"));
+        msJobsRequests.deleteAllJobs(colaboratorId);
+        colaboratorsRepo.delete(colaborator);
+    }
 
+    public void deleteAllEmployeesWhenLeadIsDeleted(Long leadId) {
+        List<Colaborator> colaborators = colaboratorsRepo.returnAllColaboratorsByLead(leadId);
+        if (colaborators.isEmpty()){
+            throw new RequestExceptions("Este líder não possui colaboradores salvos");
+        }
+        for (Colaborator colaborator : colaborators) {
+            deleteColaboratorById(colaborator.getId());
+        }
+        ResponseEntity.status(204).body("Colaboradores do líder com id " + leadId + " deletados com sucesso!");
+    }
 }
