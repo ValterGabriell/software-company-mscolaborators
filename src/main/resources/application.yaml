@@ -1,6 +1,11 @@
 spring:
   application:
     name: mscolaborator
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guess
+    password: guess
   cloud:
     gateway:
       discovery:

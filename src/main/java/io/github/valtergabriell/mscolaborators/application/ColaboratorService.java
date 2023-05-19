@@ -22,13 +22,11 @@ import java.util.Optional;
 public class ColaboratorService {
 
     private final ColaboratorsRepo colaboratorsRepo;
-    private final MsLeadRequests msLeadRequests;
     private final MsJobsRequests msJobsRequests;
     private final SendRequestToCreateNewClient sendRequestToCreateNewClient;
 
-    public ColaboratorService(ColaboratorsRepo colaboratorsRepo, MsLeadRequests msLeadRequests, MsJobsRequests msJobsRequests, SendRequestToCreateNewClient sendRequestToCreateNewClient) {
+    public ColaboratorService(ColaboratorsRepo colaboratorsRepo, MsJobsRequests msJobsRequests, SendRequestToCreateNewClient sendRequestToCreateNewClient) {
         this.colaboratorsRepo = colaboratorsRepo;
-        this.msLeadRequests = msLeadRequests;
         this.msJobsRequests = msJobsRequests;
         this.sendRequestToCreateNewClient = sendRequestToCreateNewClient;
     }
@@ -47,7 +45,7 @@ public class ColaboratorService {
             throw new RequestExceptions("O tamanho do CPF está incorreto, precisa ter 11 digitos!");
         }
 
-        //sendRequestToCreateNewClient.createNewClient(colaborators.toModel(income));
+        sendRequestToCreateNewClient.createNewClient(colaborators.toModel(income));
         return savingUserOnDB(colaborators, cnpj);
     }
 
@@ -160,9 +158,6 @@ public class ColaboratorService {
 
     public void deleteAllEmployeesWhenLeadIsDeleted(Long leadId) {
         List<Colaborator> colaborators = colaboratorsRepo.returnAllColaboratorsByLead(leadId);
-        if (colaborators.isEmpty()){
-            throw new RequestExceptions("Este líder não possui colaboradores salvos");
-        }
         for (Colaborator colaborator : colaborators) {
             deleteColaboratorById(colaborator.getId());
         }
